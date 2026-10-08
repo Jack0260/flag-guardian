@@ -91,7 +91,7 @@ const APIS = ["/api/v1/pay", "/api/legacy/search", "stripe.charges.create", "/v1
 
 export function generateFlags(count: number, seed = 42): Flag[] {
   const r = rng(seed);
-  const pick = <T,>(a: T[]) => a[Math.floor(r() * a.length)];
+  const pick = <T,>(a: T[]): T => a[Math.floor(r() * a.length)]!;
   const flags: Flag[] = [];
   for (let i = 0; i < count; i++) {
     const area = pick(AREAS);
@@ -104,7 +104,7 @@ export function generateFlags(count: number, seed = 42): Flag[] {
       const roll = r();
       deps.push({
         kind,
-        name: kind === "table" ? pick(TABLES) : kind === "api" ? pick(APIS) : `legacy${area[0].toUpperCase()}${area.slice(1)}Handler`,
+        name: kind === "table" ? pick(TABLES) : kind === "api" ? pick(APIS) : `legacy${area.charAt(0).toUpperCase()}${area.slice(1)}Handler`,
         status: roll < 0.25 ? "deleted" : roll < 0.45 ? "deprecated" : "alive",
         changedDaysAgo: Math.floor(r() * Math.max(days, 30)),
       });
@@ -170,7 +170,7 @@ export function scanSampleRepo() {
     }, 0);
     return {
       key,
-      provider: us[0].provider,
+      provider: us[0]!.provider,
       area: "app",
       rolloutPct: 100,
       daysAtFull: 0,

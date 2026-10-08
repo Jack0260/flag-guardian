@@ -114,7 +114,7 @@ function FlagList({ rows, selected, onSelect, elapsed }: { rows: Row[]; selected
       <div ref={ref} className="h-[560px] overflow-auto">
         <div style={{ height: v.getTotalSize(), position: "relative" }}>
           {v.getVirtualItems().map((it) => {
-            const r = rows[it.index];
+            const r = rows[it.index]!;
             return (
               <button key={r.key} onClick={() => onSelect(r.key)} style={{ position: "absolute", top: 0, transform: `translateY(${it.start}px)`, height: it.size }}
                 className={`grid w-full grid-cols-[1fr_70px_120px_60px] items-center gap-2 border-b border-border px-3 text-left text-sm hover:bg-accent ${selected === r.key ? "bg-accent" : ""}`}>

@@ -16,7 +16,8 @@ export type Usage = {
 const LD_METHODS = new Set(["variation", "boolVariation", "useFlag", "useLDFlag"]);
 const CUSTOM_METHODS = new Set(["isEnabled", "isOn", "flagEnabled", "useFeature"]);
 
-type N = { type: string; start: number; end: number; loc?: { start: { line: number } }; [k: string]: any };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type N = any;
 
 function flagFromCall(node: N): { flag: string; provider: Usage["provider"] } | null {
   if (node?.type !== "CallExpression") return null;
@@ -92,10 +93,10 @@ export function parsePyFlags(file: string, src: string): Usage[] {
     const line = src.slice(0, m.index).split("\n").length;
     const isIf = /^\s*(if|elif)\b/.test(src.split("\n")[line - 1] ?? "");
     out.push({
-      flag: m[2],
+      flag: m[2]!,
       file,
       line,
-      provider: m[1].includes("variation") ? "launchdarkly" : "custom",
+      provider: m[1]!.includes("variation") ? "launchdarkly" : "custom",
       kind: isIf ? "if" : "call",
       start: m.index,
       end: m.index + m[0].length,

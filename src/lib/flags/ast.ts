@@ -30,10 +30,10 @@ function flagFromCall(node: N): { flag: string; provider: Usage["provider"] } | 
   return null;
 }
 
-function findFlagIn(node: N | null): ReturnType<typeof flagFromCall> {
+function findFlagIn(node: N | null): (ReturnType<typeof flagFromCall> & { call?: N }) | null {
   if (!node || typeof node !== "object") return null;
   const direct = flagFromCall(node);
-  if (direct) return direct;
+  if (direct) return { ...direct, call: node };
   if (node.type === "UnaryExpression" || node.type === "AwaitExpression") return findFlagIn(node.argument);
   return null;
 }
@@ -59,8 +59,8 @@ export function parseJsFlags(file: string, src: string): Usage[] {
       const negated = n.test.type === "UnaryExpression" && n.test.operator === "!";
       const hit = findFlagIn(n.test);
       if (hit) {
-        const call = negated ? n.test.argument : n.test;
-        claimed.add(call.start);
+        claimed.add(hit.call!.start);
+        delete hit.call;
         const cons: [number, number] = [n.consequent.start, n.consequent.end];
         const alt: [number, number] | null = n.alternate ? [n.alternate.start, n.alternate.end] : null;
         out.push({

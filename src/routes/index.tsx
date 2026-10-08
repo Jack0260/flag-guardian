@@ -201,8 +201,8 @@ function FlagDetail({ flag, usages, elapsed, dark }: { flag: Row; usages: Return
           <div className="overflow-hidden rounded border border-border">
             <ClientOnly fallback={<div className="h-[420px]" />}>
               <Suspense fallback={<div className="h-[420px] p-4 font-mono text-xs">loading diff…</div>}>
-                {fileIdx < pr.files.length
-                  ? <DiffViewer before={pr.files[fileIdx].before} after={pr.files[fileIdx].after} path={pr.files[fileIdx].path} dark={dark} />
+                {pr.files[fileIdx]
+                  ? <DiffViewer before={pr.files[fileIdx]!.before} after={pr.files[fileIdx]!.after} path={pr.files[fileIdx]!.path} dark={dark} />
                   : <DiffViewer before="" after={pr.testFile.content} path={pr.testFile.path} dark={dark} />}
               </Suspense>
             </ClientOnly>
